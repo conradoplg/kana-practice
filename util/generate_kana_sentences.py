@@ -1,4 +1,6 @@
 import re
+import os
+import sys
 
 _WORD_RE = re.compile(r'^(\w+)(\|\d+)?(\(\w+\))?(\[\d+\])?(\{\w+\})?~?')
 _KANA_RE = re.compile(r'^[\u30a0-\u30ff\u3040-\u309f]+$')
@@ -14,7 +16,9 @@ def get_word_kana(word):
 
     Uses edict2.
     """
-    regex = re.compile(r'^' + word + r'\W[^\[]+\[([^\]]+)\]')
+    # TODO: this is actually wrong. edict2 can have multiple words in one line; handle it.
+    # Currently, this sees only the first word.
+    regex = re.compile(r'^' + word + r'\W[^\[]*\[([^\](;]+)')
     with open('util/edict2', encoding='utf-8') as f:
         for line in f:
             m = regex.match(line)
@@ -42,8 +46,28 @@ def parse_full_word(full_word):
 
 def convert_word(full_word):
     word, reading, sense, form = parse_full_word(full_word)
-    if form and is_kana(form):
-        return form
+    if reading:
+        word_kana = reading
+    elif is_kana(word):
+        word_kana = word
+    else:
+        word_kana = get_word_kana(word)
+        if not word_kana:
+            raise RuntimeError('get_word_kana({}) returned None'.format(repr(word)))
+    if form:
+        if is_kana(form):
+            return form
+        # Assuming form is kanjis + kana.
+        # Find the kana for "kanjis"
+        kana_suffix = os.path.commonprefix([word[::-1], word_kana[::-1]])[::-1]
+        kanji_prefix = word[:len(word)-len(kana_suffix)]
+        kanji_prefix_kana = word_kana[:len(word_kana)-len(kana_suffix)]
+        if not form.startswith(kanji_prefix):
+            raise RuntimeError('form does not start with the kanji prefix {}; full_word={}'.format(repr(kanji_prefix), repr(full_word)))
+        word_kana = kanji_prefix_kana + form[len(kanji_prefix):]
+    if not is_kana(word_kana):
+        raise RuntimeError('convert_word failed to convert entirely to kana; full_word={}; word_kana={}'.format(repr(full_word), repr(word_kana)))
+    return word_kana
 
 
 def parse_jpn_indices_line(line):
@@ -51,28 +75,25 @@ def parse_jpn_indices_line(line):
     if len(arr) != 3:
         return
     sentence = arr[2]
-    print(sentence)
-    for word in sentence.split():
-        convert_word(word)
+    try:
+        kana_sentence = ''.join(convert_word(word) for word in sentence.split())
+        return kana_sentence, None
+    except RuntimeError as e:
+        import traceback
+        tb = traceback.format_exc()
+        error = '{}\n{}'.format(sentence, tb)
+        return None, error
 
 
 def main():
-    i = 0
     with open('util/jpn_indices.csv', encoding='utf-8') as f:
         for line in f:
-            parse_jpn_indices_line(line)
-            i += 1
-            if i == 10:
-                break
+            kana_sentence, error = parse_jpn_indices_line(line)
+            if kana_sentence:
+                print(kana_sentence)
+            else:
+                print(error, file=sys.stderr)
 
 
 if __name__ == '__main__':
-    # main()
-    print(get_word_kana('此れ'))
-    assert get_word_kana('此れ') == 'これ'
-    assert parse_full_word('物(もの)[01]{もの}') == ('物', 'もの', '01', 'もの')
-    assert is_kana('ぁぬゖァヴ')
-    assert not is_kana('abc')
-    assert not is_kana('ぁabc')
-    assert not is_kana('abcぁ')
-    assert convert_word('住む{住んでいる}') == 'すんでいる'
+    main()
