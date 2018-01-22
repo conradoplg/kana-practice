@@ -15,6 +15,8 @@ def test_all():
     assert convert_word('君(きみ)[01]{君の}') == 'きみの'
     # Test for edict2 with two readings
     assert convert_word('馬鹿げる{馬鹿げていた}') == 'ばかげていた'
+    assert get_romaji('ばかげていた') == 'ba ka ge te i ta'
+    assert get_romaji('きゃしゃちゃじゃぢゃ') == 'kya sha cha ja ja'
 
     # TODO: fix; case where edict2 has two words and this is the second one
     # assert get_word_kana('命に係わる') == 'いのちにかかわる'
