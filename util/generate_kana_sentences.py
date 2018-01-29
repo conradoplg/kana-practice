@@ -3,39 +3,48 @@ import os
 import sys
 import unicodedata
 import kana_info
+import romkan.common
 
 _WORD_RE = re.compile(r'^(\w+)(\|\d+)?(\(\w+\))?(\[\d+\])?(\{\w+\})?~?')
 _KANA_RE = re.compile(r'^[\u30a0-\u30ff\u3040-\u309f]+$')
 
 
-def get_romaji(kana_sentence):
+def get_romaji(s):
     """
-    Return the romaji of a sentence with only kana characters.
+    Convert a Kana (仮名) to a Hepburn Romaji (ヘボン式ローマ字).
+
+    It returns two values; the first is a tuple with the kana "syllables", and the second is
+    a tuple with the same number of values with the corresponding romaji.
     """
-    romaji_parts = []
-    last_kana = None
-    for kana in kana_sentence:
-        name = kana_info.KANA_ROMAJI.get(kana)[0]
-        if not name:
-            raise RuntimeError('Romaji for kana {} not found'.format(repr(kana)))
-        if kana in 'ゃゅょ':
-            last_part = romaji_parts[-1]
-            if last_kana == 'し':
-                # e.g. 'sh' + 'ya'[-1] == 'sha'
-                name = 'sh' + name[-1]
-            elif last_kana == 'ち':
-                # e.g. 'ch' + 'ya'[-1] == 'cha'
-                name = 'ch' + name[-1]
-            elif last_kana in 'じぢ':
-                name = 'j' + name[-1]
-            else:
-                # e.g. last part was 'ki' and name is 'ya', 'k' + 'ya'
-                name = last_part[0] + name[-2:]
-            romaji_parts[-1] = name
-        else:
-            romaji_parts.append(name)
-        last_kana = kana
-    return ' '.join(romaji_parts)
+    # This is adapted from romkan to_roma function. It just returns a string, but we need to
+    # get it separated by "syllables"
+    KANROM = romkan.common.KANROM
+    KANROM_H = romkan.common.KANROM_H
+    cmp_to_key = romkan.common.cmp_to_key
+
+    def _kanpat_cmp(x, y): return (len(y) > len(x)) - (len(y) < len(x)) or (
+        len(KANROM[x]) > len(KANROM[x])) - (len(KANROM[x]) < len(KANROM[x]))
+    KANPAT = "|".join(sorted(KANROM.keys(), key=cmp_to_key(_kanpat_cmp)))
+
+    def _kanpat_cmp(x, y): return (len(y) > len(x)) - (len(y) < len(x)) or (
+        len(KANROM_H[x]) > len(KANROM_H[x])) - (len(KANROM_H[x]) < len(KANROM_H[x]))
+    KANPAT_H = "|".join(sorted(KANROM_H.keys(), key=cmp_to_key(_kanpat_cmp)))
+    pat = re.compile('|'.join((KANPAT, KANPAT_H)))
+
+    r = []
+
+    def subk(x):
+        romaji = KANROM.get(x.group(0), KANROM_H.get(x.group(0)))
+        # Don't care about apostrophe since we are splitting by "syllables" anyway
+        romaji = romaji.replace("n'", "n")
+        r.append((x.group(0), romaji))
+        # Since we need to separate by "syllable", we'll get the result through the list 'r'.
+        # The return value here does not matter
+        return ''
+
+    pat.sub(subk, s)
+
+    return list(zip(*r))
 
 
 def is_kana(s):
@@ -113,8 +122,8 @@ def parse_jpn_indices_line(line):
     try:
         kana_sentence = ''.join(convert_word(word)
                                 for word in sentence.split())
-        romaji_sentence = get_romaji(kana_sentence)
-        return kana_sentence, romaji_sentence, None
+        split_kana_sentence, split_romaji_sentence = get_romaji(kana_sentence)
+        return ' '.join(split_kana_sentence), ' '.join(split_romaji_sentence), None
     except RuntimeError as e:
         import traceback
         tb = traceback.format_exc()
@@ -125,7 +134,8 @@ def parse_jpn_indices_line(line):
 def main():
     with open('util/jpn_indices.csv', encoding='utf-8') as f:
         for line in f:
-            kana_sentence, romaji_sentence, error = parse_jpn_indices_line(line)
+            kana_sentence, romaji_sentence, error = parse_jpn_indices_line(
+                line)
             if error:
                 print(error, file=sys.stderr)
             else:
