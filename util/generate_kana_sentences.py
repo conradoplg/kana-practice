@@ -51,21 +51,29 @@ def is_kana(s):
     return _KANA_RE.match(s)
 
 
+def initialize_word_kana():
+    d = {}
+    # TODO: this is actually wrong. edict2 can have multiple words in one line; handle it.
+    # Currently, this sees only the first word.
+    regex = re.compile(r'^(\w+)\W[^\[]*\[([^\](;]+)')
+    with open('util/edict2', encoding='utf-8') as f:
+        for line in f:
+            m = regex.match(line)
+            if m:
+                d[m.group(1)] = m.group(2)
+    return d
+
+
+_WORD_KANA = initialize_word_kana()
+
+
 def get_word_kana(word):
     """
     Given a "word", return it as kana.
 
     Uses edict2.
     """
-    # TODO: this is actually wrong. edict2 can have multiple words in one line; handle it.
-    # Currently, this sees only the first word.
-    regex = re.compile(r'^' + word + r'\W[^\[]*\[([^\](;]+)')
-    with open('util/edict2', encoding='utf-8') as f:
-        for line in f:
-            m = regex.match(line)
-            if m:
-                return m.group(1)
-    return None
+    return _WORD_KANA.get(word)
 
 
 def parse_full_word(full_word):
@@ -117,7 +125,7 @@ def convert_word(full_word):
 def parse_jpn_indices_line(line):
     arr = line.strip().split(maxsplit=2)
     if len(arr) != 3:
-        return
+        return None, None, 'line {} does not have 3 fields'.format(repr(line))
     sentence = arr[2]
     try:
         kana_sentence = ''.join(convert_word(word)
