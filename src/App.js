@@ -5,7 +5,9 @@ import Practice from './Practice';
 class App extends Component {
   render() {
     return (
-      <Practice />
+      <div className="App">
+        <Practice />
+      </div>
     );
   }
 }
