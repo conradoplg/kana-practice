@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import KanaSentence from './KanaSentence';
 import RomajiSentence from './RomajiSentence';
 import './Practice.css';
@@ -8,11 +7,16 @@ class Practice extends Component {
     constructor(props) {
         super(props);
         this.handleRomajiChange = this.handleRomajiChange.bind(this);
-        this.state = { romajiSentence: '', kanaSentence: 'すぐにもどります' };
+        //ちょ っと そ こ の き み,cho tto so ko no ki mi
+        this.state = {
+            romajiSentence: '',
+            kanaSentence: 'ちょ っと そ こ の き み'.split(' '),
+            position: 1,
+        };
     }
 
-    setKanaSentence(sentence) {
-        this.setState({ kanaSentence: sentence });
+    setSentence(kanaSentence, romajiSentence) {
+        this.setState({ kanaSentence: kanaSentence });
     }
 
     handleRomajiChange(sentence) {
@@ -22,7 +26,7 @@ class Practice extends Component {
     render() {
         return (
             <div className="Practice">
-                <KanaSentence sentence={this.state.kanaSentence} />
+                <KanaSentence sentence={this.state.kanaSentence} position={this.state.position} />
                 <RomajiSentence sentence={this.state.romajiSentence} onChange={this.handleRomajiChange} />
             </div>
         );
