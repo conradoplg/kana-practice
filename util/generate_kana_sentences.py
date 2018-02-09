@@ -139,6 +139,10 @@ def parse_jpn_indices_line(line):
         return None, None, error
 
 
+def get_romaji_syllable_list():
+    return sorted(romkan.common.ROMKAN.keys())
+
+
 def main():
     with open('util/jpn_indices.csv', encoding='utf-8') as f:
         for line in f:
@@ -151,4 +155,5 @@ def main():
 
 
 if __name__ == '__main__':
+    # print(get_romaji_syllable_list())
     main()
