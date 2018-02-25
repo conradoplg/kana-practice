@@ -140,11 +140,19 @@ def parse_jpn_indices_line(line):
 
 
 def get_romaji_syllable_list():
-    return sorted(romkan.common.ROMKAN.keys())
+    return [romaji for kana, romaji in sorted(romkan.common.KANROM.items())]
+
+
+def get_katakana_syllable_list():
+    return sorted(romkan.common.KANROM.keys())
+
+
+def get_hiragana_syllable_list():
+    return sorted(romkan.common.KANROM_H.keys())
 
 
 def main():
-    with open('util/jpn_indices.csv', encoding='utf-8') as f:
+    with open('util/jpn_indices_short.csv', encoding='utf-8') as f:
         for line in f:
             kana_sentence, romaji_sentence, error = parse_jpn_indices_line(
                 line)
@@ -155,5 +163,7 @@ def main():
 
 
 if __name__ == '__main__':
-    # print(get_romaji_syllable_list())
-    main()
+    # print(get_katakana_syllable_list())
+    # print(get_hiragana_syllable_list())
+    print(get_romaji_syllable_list())
+    # main()
