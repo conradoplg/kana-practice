@@ -1,6 +1,6 @@
 .Practice {
-    width: 300px;
-    text-align: center;
+    width: 40em;
+    text-align: left;
 }
 
 .solved {
@@ -12,4 +12,8 @@
 }
 .unsolved {
     color: gray;
+}
+
+.Practice input {
+    width: 100%;
 }

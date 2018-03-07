@@ -58,8 +58,6 @@ class Practice extends Component {
                 correctRomajiLength: this.state.correctRomajiLength + correctRomajiSyllable.length,
                 typedRomajiSentence: sentence,
             })
-            console.log(this.state.position)
-            console.log(this.state.kanaSentence.length)
             if (this.state.position === this.state.kanaSentence.length - 1) {
                 this.changeSentence()
             }
