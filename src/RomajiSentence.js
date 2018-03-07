@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './RomajiSentence.css';
 
 class RomajiSentence extends Component {
     constructor(props) {
@@ -11,10 +12,12 @@ class RomajiSentence extends Component {
     }
 
     render() {
+        const label = 'Type sentence in romaji'
         return (
-            <fieldset>
-                <legend>Type sentence in romaji:</legend>
-                <input value={this.props.sentence} onChange={this.handleChange} />
+            <fieldset className="romajiFieldset">
+                <legend>{label}:</legend>
+                <input value={this.props.sentence}
+                    onChange={this.handleChange} placeholder={label + "..."} />
             </fieldset>
         );
     }

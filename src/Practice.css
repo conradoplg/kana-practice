@@ -1,5 +1,5 @@
 .Practice {
-    width: 40em;
+    max-width: 40em;
     text-align: left;
 }
 
@@ -12,8 +12,4 @@
 }
 .unsolved {
     color: gray;
-}
-
-.Practice input {
-    width: 100%;
 }

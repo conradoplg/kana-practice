@@ -1,8 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
 html, body, #root {
   height: 100%;
 }
+
 body {
   margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+  padding: 1em;
+}
+
+body, input {
+  font-family: 'Lato', sans-serif;
 }
