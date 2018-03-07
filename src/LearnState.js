@@ -1,9 +1,11 @@
 import sentences from './sentences.txt'
 
-const romajiList = ['xa', 'a', 'xi', 'i', 'xu', 'u', 'wi', 'we', 'wo', 'xe', 'e', 'xo', 'o', 'ka', 'ga', 'ki', 'kya', 'kyu', 'kyo', 'gi', 'gya', 'gyu', 'gyo', 'ku', 'gu', 'ke', 'ge', 'ko', 'go', 'sa', 'za', 'shi', 'she', 'sha', 'shu', 'sho', 'ji', 'je', 'ja', 'ju', 'jo', 'su', 'zu', 'se', 'ze', 'so', 'zo', 'ta', 'da', 'chi', 'che', 'cha', 'chu', 'cho', 'di', 'dya', 'dyu', 'dyo', 'xtsu', 'kka', 'gga', 'kki', 'kkya', 'kkyu', 'kkyo', 'ggi', 'ggya', 'ggyu', 'ggyo', 'kku', 'ggu', 'kke', 'gge', 'kko', 'ggo', 'ssa', 'zza', 'sshi', 'sshe', 'ssha', 'sshu', 'ssho', 'jji', 'jja', 'jju', 'jjo', 'ssu', 'zzu', 'sse', 'zze', 'sso', 'zzo', 'tta', 'dda', 'cchi', 'cche', 'ccha', 'cchu', 'ccho', 'ddi', 'ddya', 'ddyu', 'ddyo', 'ttsu', 'ddu', 'tte', 'tti', 'dde', 'tto', 'ddo', 'ddu', 'hha', 'bba', 'ppa', 'hhi', 'hhya', 'hhyu', 'hhyo', 'bbi', 'bbya', 'bbyu', 'bbyo', 'ppi', 'ppya', 'ppyu', 'ppyo', 'ffu', 'ffa', 'ffi', 'ffe', 'ffo', 'ffu', 'bbu', 'ppu', 'hhe', 'bbe', 'ppe', 'hho', 'bbo', 'ppo', 'yya', 'yyu', 'yyo', 'rra', 'rri', 'rrya', 'rryu', 'rryo', 'rru', 'rre', 'rro', 'vvu', 'vva', 'vvi', 'vve', 'vvo', 'tsu', 'du', 'te', 'ti', 'de', 'di', 'to', 'do', 'du', 'na', 'ni', 'nya', 'nyu', 'nyo', 'nu', 'ne', 'no', 'ha', 'ba', 'pa', 'hi', 'hya', 'hyu', 'hyo', 'bi', 'bya', 'byu', 'byo', 'pi', 'pya', 'pyu', 'pyo', 'fu', 'fa', 'fi', 'fe', 'fo', 'fu', 'bu', 'pu', 'he', 'be', 'pe', 'ho', 'bo', 'po', 'ma', 'mi', 'mya', 'myu', 'myo', 'mu', 'me', 'mo', 'xya', 'ya', 'xyu', 'yu', 'xyo', 'yo', 'ra', 'ri', 'rya', 'ryu', 'ryo', 'ru', 're', 'ro', 'xwa', 'wa', 'wi', 'we', 'wo', "n'", 'vu', 'va', 'vi', 've', 'vo', '-']
+const ROMAJI_LIST = ['xa', 'a', 'xi', 'i', 'xu', 'u', 'wi', 'we', 'wo', 'xe', 'e', 'xo', 'o', 'ka', 'ga', 'ki', 'kya', 'kyu', 'kyo', 'gi', 'gya', 'gyu', 'gyo', 'ku', 'gu', 'ke', 'ge', 'ko', 'go', 'sa', 'za', 'shi', 'she', 'sha', 'shu', 'sho', 'ji', 'je', 'ja', 'ju', 'jo', 'su', 'zu', 'se', 'ze', 'so', 'zo', 'ta', 'da', 'chi', 'che', 'cha', 'chu', 'cho', 'di', 'dya', 'dyu', 'dyo', 'xtsu', 'kka', 'gga', 'kki', 'kkya', 'kkyu', 'kkyo', 'ggi', 'ggya', 'ggyu', 'ggyo', 'kku', 'ggu', 'kke', 'gge', 'kko', 'ggo', 'ssa', 'zza', 'sshi', 'sshe', 'ssha', 'sshu', 'ssho', 'jji', 'jja', 'jju', 'jjo', 'ssu', 'zzu', 'sse', 'zze', 'sso', 'zzo', 'tta', 'dda', 'cchi', 'cche', 'ccha', 'cchu', 'ccho', 'ddi', 'ddya', 'ddyu', 'ddyo', 'ttsu', 'ddu', 'tte', 'tti', 'dde', 'tto', 'ddo', 'ddu', 'hha', 'bba', 'ppa', 'hhi', 'hhya', 'hhyu', 'hhyo', 'bbi', 'bbya', 'bbyu', 'bbyo', 'ppi', 'ppya', 'ppyu', 'ppyo', 'ffu', 'ffa', 'ffi', 'ffe', 'ffo', 'ffu', 'bbu', 'ppu', 'hhe', 'bbe', 'ppe', 'hho', 'bbo', 'ppo', 'yya', 'yyu', 'yyo', 'rra', 'rri', 'rrya', 'rryu', 'rryo', 'rru', 'rre', 'rro', 'vvu', 'vva', 'vvi', 'vve', 'vvo', 'tsu', 'du', 'te', 'ti', 'de', 'di', 'to', 'do', 'du', 'na', 'ni', 'nya', 'nyu', 'nyo', 'nu', 'ne', 'no', 'ha', 'ba', 'pa', 'hi', 'hya', 'hyu', 'hyo', 'bi', 'bya', 'byu', 'byo', 'pi', 'pya', 'pyu', 'pyo', 'fu', 'fa', 'fi', 'fe', 'fo', 'fu', 'bu', 'pu', 'he', 'be', 'pe', 'ho', 'bo', 'po', 'ma', 'mi', 'mya', 'myu', 'myo', 'mu', 'me', 'mo', 'xya', 'ya', 'xyu', 'yu', 'xyo', 'yo', 'ra', 'ri', 'rya', 'ryu', 'ryo', 'ru', 're', 'ro', 'xwa', 'wa', 'wi', 'we', 'wo', "n'", 'vu', 'va', 'vi', 've', 'vo', '-']
+
+const PARDON_VALUE = 0.25
 
 function getSyllableByPrefix(entry) {
-    for (const syllable of romajiList) {
+    for (const syllable of ROMAJI_LIST) {
         if (syllable.startsWith(entry)) {
             return syllable
         }
@@ -61,10 +63,12 @@ class LearnState {
     }
 
     registerSyllable(typed, correct, correctKana) {
+        let kanaStats = this.kanaAccuracyDict[correctKana]
         if (typed === correct) {
-            this.kanaAccuracyDict[correctKana].correct += 1
+            kanaStats.correct += 1
+            kanaStats.wrong = Math.max(0, kanaStats.wrong - PARDON_VALUE)
         } else {
-            this.kanaAccuracyDict[correctKana].wrong += 1
+            kanaStats.wrong += 1
         }
     }
 

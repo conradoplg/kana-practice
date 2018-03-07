@@ -54,7 +54,7 @@ it('gets sentence with most mistaken kana', async () => {
 
     let ls = new LearnState()
     await ls.init()
-    ls.registerSyllable('ro', 'ru', 'ロ')
+    ls.registerSyllable('ru', 'ro', 'ロ')
     for (let i = 0; i < 4; i++) {
         const [kanaSentence, romajiSentence] = ls._getSentenceWithMostMistakenKana()
         expect(romajiSentence[0]).toEqual('ro')
@@ -72,4 +72,29 @@ it('gets random sentence', async () => {
         const [kanaSentence, romajiSentence] = ls._getRandomSentence()
         expect(['ro', 'do'].indexOf(romajiSentence[0])).not.toBe(-1)
     }
+})
+
+it('pardons mistakes', async () => {
+    fetch.mockResponse(`ロ,ro
+ど,do
+`)
+    let ls = new LearnState()
+    await ls.init()
+
+    let romajiSentence
+
+    ls.registerSyllable('ra', 'ro', 'ロ')
+    romajiSentence = ls._getSentenceWithMostMistakenKana()[1]
+    expect(romajiSentence[0]).toEqual('ro')
+    
+    ls.registerSyllable('da', 'do', 'ど')
+    ls.registerSyllable('da', 'do', 'ど')
+    romajiSentence = ls._getSentenceWithMostMistakenKana()[1]
+    expect(romajiSentence[0]).toEqual('do')
+
+    for (let i = 0; i < 5; i++) {
+        ls.registerSyllable('do', 'do', 'ど')
+    }
+    romajiSentence = ls._getSentenceWithMostMistakenKana()[1]
+    expect(romajiSentence[0]).toEqual('ro')
 })
