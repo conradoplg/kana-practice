@@ -37,7 +37,7 @@ function checkSyllable(typedSyllable, correctSyllable) {
 
 class LearnState {
     constructor() {
-        this.kanaAccuracyDict = {}
+        this.kanaAccuracyDict = new Map()
         this.sentences = []
         this.possibleKanas = new Set()
     }
@@ -54,7 +54,7 @@ class LearnState {
             }
         }
         for (const kana of this.possibleKanas) {
-            this.kanaAccuracyDict[kana] = {correct: 0, wrong: 0}
+            this.kanaAccuracyDict.set(kana, {correct: 0, wrong: 0})
         }
     }
 
@@ -63,7 +63,7 @@ class LearnState {
     }
 
     registerSyllable(typed, correct, correctKana) {
-        let kanaStats = this.kanaAccuracyDict[correctKana]
+        let kanaStats = this.kanaAccuracyDict.get(correctKana)
         if (typed === correct) {
             kanaStats.correct += 1
             kanaStats.wrong = Math.max(0, kanaStats.wrong - PARDON_VALUE)
@@ -108,8 +108,8 @@ class LearnState {
         let leastKana = null
         let leastCorrect = 0
         for (const kana of this.possibleKanas) {
-            if (leastKana === null || this.kanaAccuracyDict[kana].correct < leastCorrect) {
-                leastCorrect = this.kanaAccuracyDict[kana].correct
+            if (leastKana === null || this.kanaAccuracyDict.get(kana).correct < leastCorrect) {
+                leastCorrect = this.kanaAccuracyDict.get(kana).correct
                 leastKana = kana
             }
         }
@@ -120,12 +120,24 @@ class LearnState {
         let mostKana = null
         let mostMistakes = 0
         for (const kana of this.possibleKanas) {
-            if (mostKana === null || this.kanaAccuracyDict[kana].wrong > mostMistakes) {
-                mostMistakes = this.kanaAccuracyDict[kana].wrong
+            if (mostKana === null || this.kanaAccuracyDict.get(kana).wrong > mostMistakes) {
+                mostMistakes = this.kanaAccuracyDict.get(kana).wrong
                 mostKana = kana
             }
         }
         return this._getSentenceWithKana(mostKana)
+    }
+
+    getTopMistakenKana() {
+        let kanaFreqList = []
+        for (let [kana, stats] of this.kanaAccuracyDict) {
+            if (stats.wrong > 0) {
+                kanaFreqList.push([stats.wrong, kana])
+            }
+        }
+        kanaFreqList.sort()
+        kanaFreqList.reverse()
+        return kanaFreqList
     }
 }
 

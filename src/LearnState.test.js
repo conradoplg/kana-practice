@@ -7,7 +7,7 @@ it('is created correctly', async () => {
 
     let ls = new LearnState()
     await ls.init()
-    expect(ls.kanaAccuracyDict['ロ']).toEqual({correct: 0, wrong: 0})
+    expect(ls.kanaAccuracyDict.get('ロ')).toEqual({correct: 0, wrong: 0})
 })
 
 it('initializes correctly', async () => {
@@ -97,4 +97,23 @@ it('pardons mistakes', async () => {
     }
     romajiSentence = ls._getSentenceWithMostMistakenKana()[1]
     expect(romajiSentence[0]).toEqual('ro')
+})
+
+
+it('returns top mistaken kana', async () => {
+    fetch.mockResponse(`ロ,ro
+ど,do
+`)
+    let ls = new LearnState()
+    await ls.init()
+
+    let freqKanaList
+    freqKanaList = ls.getTopMistakenKana()
+    expect(freqKanaList).toEqual([])
+
+    ls.registerSyllable('ru', 'ro', 'ロ')
+    ls.registerSyllable('du', 'do', 'ど')
+    ls.registerSyllable('du', 'do', 'ど')
+    freqKanaList = ls.getTopMistakenKana()
+    expect(freqKanaList).toEqual([[2, 'ど'], [1, 'ロ']])
 })
