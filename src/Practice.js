@@ -76,6 +76,11 @@ class Practice extends Component {
     render() {
         return (
             <div className="Practice">
+                <h1 className="Title">Kana Practice</h1>
+                <p className="Description">
+                Practice your hiragana and katakana knowledge with full sentences
+                to improve your reading speed.
+                </p>
                 <KanaSentence sentence={this.state.kanaSentence} position={this.state.position} />
                 <RomajiSentence sentence={this.state.typedRomajiSentence} onChange={this.handleRomajiChange} />
             </div>

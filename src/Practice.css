@@ -3,6 +3,10 @@
     text-align: left;
 }
 
+.Description {
+    padding-bottom: 4em;
+}
+
 .solved {
     color: darkgreen;
 }
@@ -11,5 +15,5 @@
     text-underline-position: under;
 }
 .unsolved {
-    color: gray;
+    color: #374d4d;
 }
