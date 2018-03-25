@@ -14,7 +14,7 @@ class RomajiSentence extends Component {
     render() {
         const label = 'Type sentence in romaji'
         return (
-            <fieldset className="romajiFieldset">
+            <fieldset className="RomajiSentence">
                 <legend>{label}:</legend>
                 <input value={this.props.sentence}
                     onChange={this.handleChange} placeholder={label + "..."} />

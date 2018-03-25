@@ -58,8 +58,12 @@ class LearnState {
         }
     }
 
-    checkSyllable(typed, correct) {
-        return checkSyllable(typed, correct)
+    checkSyllable(typed, correct, kana) {
+        const r = checkSyllable(typed, correct)
+        if (r !== true) {
+            this.registerSyllable(typed, correct, kana)
+        }
+        return r
     }
 
     registerSyllable(typed, correct, correctKana) {

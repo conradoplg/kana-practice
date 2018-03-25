@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import KanaSentence from './KanaSentence';
 import RomajiSentence from './RomajiSentence';
+import Statistics from './Statistics';
 import LearnState from './LearnState';
 import './Practice.css';
 
@@ -16,6 +17,7 @@ class Practice extends Component {
             typedRomajiSentence: '',
             position: 0,
             correctRomajiLength: 0,
+            topMistakenKana: [],
         };
     }
 
@@ -45,7 +47,9 @@ class Practice extends Component {
     handleRomajiChange(sentence) {
         const typedRomajiSyllable = sentence.substr(this.state.correctRomajiLength)
         const correctRomajiSyllable = this.state.romajiSentence[this.state.position]
-        const status = this.ls.checkSyllable(typedRomajiSyllable, correctRomajiSyllable)
+        const correctKanaSyllable = this.state.kanaSentence[this.state.position]
+        const status = this.ls.checkSyllable(
+            typedRomajiSyllable, correctRomajiSyllable, correctKanaSyllable)
 
         if ((sentence.length < this.state.correctRomajiLength)
                 || !sentence.startsWith(this.state.typedRomajiSentence)) {
@@ -68,9 +72,9 @@ class Practice extends Component {
             // Got it wrong, delete wrong romaji syllable
             this.setState({ typedRomajiSentence: sentence.substring(0, this.state.correctRomajiLength) });
             if (status !== false) {
-                console.log('Typed ' + status + ', should be ' + correctRomajiSyllable)
             }
         }
+        this.setState({topMistakenKana: this.ls.getTopMistakenKana()})
     }
 
     render() {
@@ -83,8 +87,9 @@ class Practice extends Component {
                 </p>
                 <KanaSentence sentence={this.state.kanaSentence} position={this.state.position} />
                 <RomajiSentence sentence={this.state.typedRomajiSentence} onChange={this.handleRomajiChange} />
+                <Statistics topMistakenKana={this.state.topMistakenKana} />
             </div>
-        );
+        )
     }
 }
 

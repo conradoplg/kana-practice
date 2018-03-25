@@ -3,8 +3,8 @@
     text-align: left;
 }
 
-.Description {
-    padding-bottom: 4em;
+.Description, .RomajiSentence {
+    margin-bottom: 4em;
 }
 
 .solved {

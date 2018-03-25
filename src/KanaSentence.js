@@ -10,12 +10,12 @@ class KanaSentence extends Component {
                 className = 'solving';
             }
             return <span key={index} className={className}>{syllable}</span>
-        });
+        })
         return (
             <p className="KanaSentence">
                 {spanItems}
             </p>
-        );
+        )
     }
 }
 

@@ -86,7 +86,7 @@ it('pardons mistakes', async () => {
     ls.registerSyllable('ra', 'ro', 'ロ')
     romajiSentence = ls._getSentenceWithMostMistakenKana()[1]
     expect(romajiSentence[0]).toEqual('ro')
-    
+
     ls.registerSyllable('da', 'do', 'ど')
     ls.registerSyllable('da', 'do', 'ど')
     romajiSentence = ls._getSentenceWithMostMistakenKana()[1]
