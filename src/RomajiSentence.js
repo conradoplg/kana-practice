@@ -17,7 +17,8 @@ class RomajiSentence extends Component {
             <fieldset className="RomajiSentence">
                 <legend>{label}:</legend>
                 <input value={this.props.sentence}
-                    onChange={this.handleChange} placeholder={label + "..."} />
+                    onChange={this.handleChange} placeholder={label + "..."}
+                    autoFocus />
             </fieldset>
         );
     }
