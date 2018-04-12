@@ -3,7 +3,8 @@ import './Statistics.css';
 
 class Statistics extends Component {
     render() {
-        const spanItems = this.props.topMistakenKana.map((stats, index) => {
+        const topK = this.props.topMistakenKana.slice(0, 10)
+        const spanItems = topK.map((stats, index) => {
             return (
                 <span key={index}>
                     <span className="MistakenKana">
