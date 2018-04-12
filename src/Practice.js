@@ -50,9 +50,9 @@ class Practice extends Component {
         const correctKanaSyllable = this.state.kanaSentence[this.state.position]
         const status = this.ls.checkSyllable(
             typedRomajiSyllable, correctRomajiSyllable, correctKanaSyllable)
+        const correctRomajiSentence = this.state.romajiSentence.join('')
 
-        if ((sentence.length < this.state.correctRomajiLength)
-                || !sentence.startsWith(this.state.typedRomajiSentence)) {
+        if (!sentence.startsWith(correctRomajiSentence.substr(0, this.state.correctRomajiLength))) {
             // Read-only portion was edited; restore it
             this.setState({ typedRomajiSentence: this.state.typedRomajiSentence });
         } else if (typedRomajiSyllable === correctRomajiSyllable) {
