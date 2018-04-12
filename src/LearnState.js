@@ -4,6 +4,8 @@ const ROMAJI_LIST = ['xa', 'a', 'xi', 'i', 'xu', 'u', 'wi', 'we', 'wo', 'xe', 'e
 
 const PARDON_VALUE = 0.25
 
+const KANA_ACCURACY_KEY = 'kanaAccuracy-0.1.0'
+
 function getSyllableByPrefix(entry) {
     for (const syllable of ROMAJI_LIST) {
         if (syllable.startsWith(entry)) {
@@ -42,7 +44,8 @@ class LearnState {
         this.possibleKanas = new Set()
     }
 
-    async init() {
+    async init(storage) {
+        this.storage = storage
         const resp = await fetch(sentences)
         const data = await resp.text()
         this.sentences = data.split("\n").filter(String)
@@ -55,6 +58,10 @@ class LearnState {
         }
         for (const kana of this.possibleKanas) {
             this.kanaAccuracyDict.set(kana, {correct: 0, wrong: 0})
+        }
+        if (this.storage) {
+            const v = this.storage.getItem(KANA_ACCURACY_KEY)
+            this.kanaAccuracyDict = new Map(JSON.parse(v))
         }
     }
 
@@ -73,6 +80,10 @@ class LearnState {
             kanaStats.wrong = Math.max(0, kanaStats.wrong - PARDON_VALUE)
         } else {
             kanaStats.wrong += 1
+        }
+        if (this.storage) {
+            const v = JSON.stringify([...this.kanaAccuracyDict])
+            this.storage.setItem(KANA_ACCURACY_KEY, v)
         }
     }
 

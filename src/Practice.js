@@ -22,7 +22,7 @@ class Practice extends Component {
     }
 
     componentDidMount() {
-        this.ls.init().then(() => {
+        this.ls.init(window.localStorage).then(() => {
             this.changeSentence()
         }).catch((err) => {
             console.log(err)
