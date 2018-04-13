@@ -32,10 +32,10 @@ def test_all():
         tuple('け ん ど'.split()),
         tuple('ke n do'.split()),
     ]
-    line = 'じゃ 留年~ 為る(する){しなかったら} 付き合う{付き合って} 呉れる{くれん} の タラレバ~ 話(はなし) って 好き(すき) だ{じゃない} の'
+    line = '74076	329644	じゃ 留年~ 為る(する){しなかったら} 付き合う{付き合って} 呉れる{くれん} の タラレバ~ 話(はなし) って 好き(すき) だ{じゃない} の'
     assert parse_jpn_indices_line(line) == (
-        'し な か った ら つ き あ って く れ ん の タ ラ レ バ は な し って す き じゃ な い の',
-        'shi na ka tta ra tsu ki a tte ku re n no ta ra re ba ha na shi tte su ki ja na i no',
+        'じゃ りゅ う ね ん し な か った ら つ き あ って く れ ん の タ ラ レ バ は な し って す き じゃ な い の',
+        'ja ryu u ne n shi na ka tta ra tsu ki a tte ku re n no ta ra re ba ha na shi tte su ki ja na i no',
         None,
     )
 
