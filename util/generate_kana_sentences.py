@@ -106,7 +106,7 @@ def convert_word(full_word):
                 'get_word_kana({}) returned None'.format(repr(word)))
     if form:
         if is_kana(form):
-            return form
+            return form, None
         # Assuming form is kanjis + kana.
         # Find the kana for "kanjis"
         kana_suffix = os.path.commonprefix([word[::-1], word_kana[::-1]])[::-1]
@@ -119,7 +119,14 @@ def convert_word(full_word):
     if not is_kana(word_kana):
         raise RuntimeError('convert_word failed to convert entirely to kana; full_word={}; word_kana={}'.format(
             repr(full_word), repr(word_kana)))
-    return word_kana
+    if form:
+        word = form
+    kana_suffix = os.path.commonprefix([word[::-1], word_kana[::-1]])[::-1]
+    kanji_prefix = word[:len(word) - len(kana_suffix)]
+    kanji_prefix_kana = word_kana[:len(word_kana) - len(kana_suffix)]
+    if not kanji_prefix:
+        return word_kana, None
+    return word_kana, (kanji_prefix, 0, len(kanji_prefix_kana))
 
 
 def parse_jpn_indices_line(line):
@@ -128,7 +135,7 @@ def parse_jpn_indices_line(line):
         return None, None, 'line {} does not have 3 fields'.format(repr(line))
     sentence = arr[2]
     try:
-        kana_sentence = ''.join(convert_word(word)
+        kana_sentence = ''.join(convert_word(word)[0]
                                 for word in sentence.split())
         split_kana_sentence, split_romaji_sentence = get_romaji(kana_sentence)
         return ' '.join(split_kana_sentence), ' '.join(split_romaji_sentence), None
