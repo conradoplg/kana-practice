@@ -89,18 +89,46 @@ class LearnState {
 
     _splitSentence(sentence) {
         let [kana, romaji, kanjiInfo] = sentence.split(',')
-        return [kana.split(' '), romaji.split(' '), kanjiInfo.split(' ')]
+        if (kanjiInfo.length == 0) {
+            kanjiInfo = []
+        } else {
+            kanjiInfo = kanjiInfo.split(' ').map((v) => {
+                let a = v.split(':')
+                return [a[0], parseInt(a[1], 10), parseInt(a[2], 10)]
+            })
+        }
+        return [kana.split(' '), romaji.split(' '), kanjiInfo]
+    }
+
+    _computeGroups(kanaSentence, kanjiInfo) {
+        let groups = []
+        let pos = 0
+        for (let [i, info] of kanjiInfo.entries()) {
+            let [kanji, start, end] = info
+            for (; pos < start; pos++) {
+                groups.push(['', pos, pos+1])
+            }
+            groups.push([kanji, start, end])
+            pos = end
+        }
+        for (; pos < kanaSentence.length; pos++) {
+            groups.push(['', pos, pos+1])
+        }
+        return groups
     }
 
     getSentence() {
         let idx = Math.floor(Math.random() * 3)
+        let r
         if (idx === 0) {
-            return this._getSentenceWithLeastPracticedKana()
+            r = this._getSentenceWithLeastPracticedKana()
         } else if (idx === 1) {
-            return this._getSentenceWithMostMistakenKana()
+            r = this._getSentenceWithMostMistakenKana()
         } else {
-            return this._getRandomSentence()
+            r = this._getRandomSentence()
         }
+        r[2] = this._computeGroups(r[0], r[2])
+        return r
     }
 
     _getRandomSentence() {

@@ -29,10 +29,11 @@ class Practice extends Component {
         })
     }
 
-    setSentence(kanaSentence, romajiSentence) {
+    setSentence(kanaSentence, romajiSentence, kanjiInfo) {
         this.setState({
             romajiSentence: romajiSentence,
             kanaSentence: kanaSentence,
+            kanjiInfo: kanjiInfo,
             typedRomajiSentence: '',
             position: 0,
             correctRomajiLength: 0,
@@ -40,8 +41,8 @@ class Practice extends Component {
     }
 
     changeSentence() {
-        let [kanaSentence, romajiSentence] = this.ls.getSentence()
-        this.setSentence(kanaSentence, romajiSentence)
+        let [kanaSentence, romajiSentence, kanjiInfo] = this.ls.getSentence()
+        this.setSentence(kanaSentence, romajiSentence, kanjiInfo)
     }
 
     handleRomajiChange(sentence) {
@@ -85,7 +86,8 @@ class Practice extends Component {
                 Practice your hiragana and katakana knowledge with full sentences
                 to improve your reading speed.
                 </p>
-                <KanaSentence sentence={this.state.kanaSentence} position={this.state.position} />
+                <KanaSentence sentence={this.state.kanaSentence} kanjiInfo={this.state.kanjiInfo}
+                    position={this.state.position} />
                 <RomajiSentence sentence={this.state.typedRomajiSentence} onChange={this.handleRomajiChange} />
                 <Statistics topMistakenKana={this.state.topMistakenKana} />
             </div>

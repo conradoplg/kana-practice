@@ -117,3 +117,40 @@ it('returns top mistaken kana', async () => {
     freqKanaList = ls.getTopMistakenKana()
     expect(freqKanaList).toEqual([[2, 'ど'], [1, 'ロ']])
 })
+
+it('splits sentences', () => {
+    let ls = new LearnState()
+    let sentence = 'ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta,小:7:9 白:11:13 聞:18:19'
+    const [kanaSentence, romajiSentence, kanjiInfo] = ls._splitSentence(sentence)
+    expect(kanjiInfo[0]).toEqual(['小', 7, 9])
+})
+
+it('compute groups', () => {
+    let ls = new LearnState()
+    let kanaSentence = 'ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た'.split(' ')
+    let kanjiInfo = [['小', 7, 9], ['白', 11, 13], ['聞', 18, 19]]
+    const groups = ls._computeGroups(kanaSentence, kanjiInfo)
+    expect(groups).toEqual([
+        ['', 0, 1],
+        ['', 1, 2],
+        ['', 2, 3],
+        ['', 3, 4],
+        ['', 4, 5],
+        ['', 5, 6],
+        ['', 6, 7],
+        ['小', 7, 9],
+        ['', 9, 10],
+        ['', 10, 11],
+        ['白', 11, 13],
+        ['', 13, 14],
+        ['', 14, 15],
+        ['', 15, 16],
+        ['', 16, 17],
+        ['', 17, 18],
+        ['聞', 18, 19],
+        ['', 19, 20],
+        ['', 20, 21],
+        ['', 21, 22],
+        ['', 22, 23],
+    ])
+})
