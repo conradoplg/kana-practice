@@ -1,8 +1,8 @@
 import LearnState from './LearnState';
 
 it('is created correctly', async () => {
-    fetch.mockResponse(`ロ グ ア ウ ト す る ん じゃ な か った よ,ro gu a u to su ru n ja na ka tta yo
-ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta
+    fetch.mockResponse(`ロ グ ア ウ ト す る ん じゃ な か った よ,ro gu a u to su ru n ja na ka tta yo,
+ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta,小:7:9 白:11:13 聞:18:19
 `)
 
     let ls = new LearnState()
@@ -11,8 +11,8 @@ it('is created correctly', async () => {
 })
 
 it('initializes correctly', async () => {
-    fetch.mockResponse(`ロ グ ア ウ ト す る ん じゃ な か った よ,ro gu a u to su ru n ja na ka tta yo
-ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta
+    fetch.mockResponse(`ロ グ ア ウ ト す る ん じゃ な か った よ,ro gu a u to su ru n ja na ka tta yo,
+ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta,小:7:9 白:11:13 聞:18:19
 `)
 
     let ls = new LearnState()
@@ -21,8 +21,8 @@ it('initializes correctly', async () => {
 })
 
 it('gets sentence with specific kana', async () => {
-    fetch.mockResponse(`ロ,ro
-ど,do
+    fetch.mockResponse(`ロ,ro,
+ど,do,
 `)
 
     let ls = new LearnState()
@@ -34,8 +34,8 @@ it('gets sentence with specific kana', async () => {
 })
 
 it('gets sentence with least practiced kana', async () => {
-    fetch.mockResponse(`ロ,ro
-ど,do
+    fetch.mockResponse(`ロ,ro,
+ど,do,
 `)
 
     let ls = new LearnState()
@@ -48,8 +48,8 @@ it('gets sentence with least practiced kana', async () => {
 })
 
 it('gets sentence with most mistaken kana', async () => {
-    fetch.mockResponse(`ロ,ro
-ど,do
+    fetch.mockResponse(`ロ,ro,
+ど,do,
 `)
 
     let ls = new LearnState()
@@ -62,8 +62,8 @@ it('gets sentence with most mistaken kana', async () => {
 })
 
 it('gets random sentence', async () => {
-    fetch.mockResponse(`ロ,ro
-ど,do
+    fetch.mockResponse(`ロ,ro,
+ど,do,
 `)
 
     let ls = new LearnState()
@@ -75,8 +75,8 @@ it('gets random sentence', async () => {
 })
 
 it('pardons mistakes', async () => {
-    fetch.mockResponse(`ロ,ro
-ど,do
+    fetch.mockResponse(`ロ,ro,
+ど,do,
 `)
     let ls = new LearnState()
     await ls.init()
@@ -101,8 +101,8 @@ it('pardons mistakes', async () => {
 
 
 it('returns top mistaken kana', async () => {
-    fetch.mockResponse(`ロ,ro
-ど,do
+    fetch.mockResponse(`ロ,ro,
+ど,do,
 `)
     let ls = new LearnState()
     await ls.init()

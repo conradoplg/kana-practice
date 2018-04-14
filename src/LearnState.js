@@ -88,8 +88,8 @@ class LearnState {
     }
 
     _splitSentence(sentence) {
-        let [kana, romaji] = sentence.split(',')
-        return [kana.split(' '), romaji.split(' ')]
+        let [kana, romaji, kanjiInfo] = sentence.split(',')
+        return [kana.split(' '), romaji.split(' '), kanjiInfo.split(' ')]
     }
 
     getSentence() {
