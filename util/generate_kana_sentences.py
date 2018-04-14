@@ -93,6 +93,25 @@ def parse_full_word(full_word):
     return word, reading, sense, form
 
 
+def adjust_indices(split_kana, start, end):
+    """
+    Adjust indices from a kana word to match kana syllables.
+
+    convert_word returns kanjis and the indices into the kana string, e.g.
+    convert_word('留年') == ('りゅうねん', (留年, 0, 5))
+
+    However, after we split the kana into syllables, we need to adjust the indices, e.g.
+    after converting to ['りゅ', 'う', 'ね', 'ん'], the indices are now (0, 4).
+    """
+    kana_pos = 0
+    for syllable in split_kana:
+        if kana_pos < start:
+            start -= len(syllable) - 1
+        if kana_pos < end:
+            end -= len(syllable) - 1
+        kana_pos += len(syllable)
+    return start, end
+
 def convert_word(full_word):
     word, reading, sense, form = parse_full_word(full_word)
     if reading:
@@ -135,15 +154,27 @@ def parse_jpn_indices_line(line):
         return None, None, 'line {} does not have 3 fields'.format(repr(line))
     sentence = arr[2]
     try:
-        kana_sentence = ''.join(convert_word(word)[0]
-                                for word in sentence.split())
-        split_kana_sentence, split_romaji_sentence = get_romaji(kana_sentence)
-        return ' '.join(split_kana_sentence), ' '.join(split_romaji_sentence), None
-    except RuntimeError as e:
+        split_kana_sentence = []
+        split_romaji_sentence = []
+        kanji_info_list = []
+        pos = 0
+        for word in sentence.split():
+            word_kana, kanji_info = convert_word(word)
+            split_word_kana, split_word_romaji = get_romaji(word_kana)
+            split_kana_sentence += split_word_kana
+            split_romaji_sentence += split_word_romaji
+            if kanji_info:
+                kanji, start, end = kanji_info
+                start, end = adjust_indices(split_word_kana, start, end)
+                kanji_info_list.append('{}:{}:{}'.format(kanji, pos + start, pos + end))
+            pos += len(split_word_kana)
+        return (' '.join(split_kana_sentence), ' '.join(split_romaji_sentence),
+            ' '.join(kanji_info_list), None)
+    except RuntimeError:
         import traceback
         tb = traceback.format_exc()
         error = '{}\n{}'.format(sentence, tb)
-        return None, None, error
+        return None, None, None, error
 
 
 def get_romaji_syllable_list():
@@ -161,16 +192,15 @@ def get_hiragana_syllable_list():
 def main():
     with open('util/jpn_indices_short.csv', encoding='utf-8') as f:
         for line in f:
-            kana_sentence, romaji_sentence, error = parse_jpn_indices_line(
-                line)
+            kana_sentence, romaji_sentence, kanji_info, error = parse_jpn_indices_line(line)
             if error:
                 print(error, file=sys.stderr)
             else:
-                print(kana_sentence, romaji_sentence, sep=',')
+                print(kana_sentence, romaji_sentence, kanji_info, sep=',')
 
 
 if __name__ == '__main__':
     # print(get_katakana_syllable_list())
     # print(get_hiragana_syllable_list())
-    print(get_romaji_syllable_list())
-    # main()
+    # print(get_romaji_syllable_list())
+    main()
