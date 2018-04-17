@@ -38,7 +38,8 @@ class Practice extends Component {
             typedRomajiSentence: '',
             position: 0,
             correctRomajiLength: 0,
-        });
+            topMistakenKana: this.ls.getTopMistakenKana(),
+        })
     }
 
     changeSentence() {

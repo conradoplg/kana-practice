@@ -178,8 +178,7 @@ class LearnState {
                 kanaFreqList.push([stats.wrong, kana])
             }
         }
-        kanaFreqList.sort()
-        kanaFreqList.reverse()
+        kanaFreqList.sort((a, b) => b[0] - a[0])
         return kanaFreqList
     }
 }
