@@ -89,7 +89,7 @@ class LearnState {
 
     _splitSentence(sentence) {
         let [kana, romaji, kanjiInfo] = sentence.split(',')
-        if (kanjiInfo.length == 0) {
+        if (kanjiInfo.length === 0) {
             kanjiInfo = []
         } else {
             kanjiInfo = kanjiInfo.split(' ').map((v) => {
@@ -103,7 +103,7 @@ class LearnState {
     _computeGroups(kanaSentence, kanjiInfo) {
         let groups = []
         let pos = 0
-        for (let [i, info] of kanjiInfo.entries()) {
+        for (let info of kanjiInfo) {
             let [kanji, start, end] = info
             for (; pos < start; pos++) {
                 groups.push(['', pos, pos+1])

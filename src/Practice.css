@@ -7,6 +7,25 @@
     margin-bottom: 4em;
 }
 
+.KanaSentence {
+    margin-bottom: 1em;
+    font-size: 150%;
+}
+
+.KanaSentence .Element {
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.KanaSentence .Element p {
+    text-align: center;
+    margin: 0;
+}
+
+.KanaSentence .Element .Furigana {
+    font-size: 50%;
+}
+
 .solved {
     color: darkgreen;
 }

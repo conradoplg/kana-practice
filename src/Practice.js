@@ -14,6 +14,7 @@ class Practice extends Component {
         this.state = {
             romajiSentence: [],
             kanaSentence: [],
+            kanjiInfo: [],
             typedRomajiSentence: '',
             position: 0,
             correctRomajiLength: 0,
