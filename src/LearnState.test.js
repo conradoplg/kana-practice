@@ -20,6 +20,36 @@ it('initializes correctly', async () => {
     expect(ls.sentences.length).toEqual(2)
 })
 
+it('is initialized correctly with storage with null key', async () => {
+    fetch.mockResponse(`ロ グ ア ウ ト す る ん じゃ な か った よ,ro gu a u to su ru n ja na ka tta yo,
+ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta,小:7:9 白:11:13 聞:18:19
+`)
+    let storage = {
+        getItem: (key) => {
+            return null
+        }
+    }
+    let ls = new LearnState()
+    await ls.init(storage)
+    expect(ls.kanaAccuracyDict.get('ロ')).toEqual({correct: 0, wrong: 0})
+})
+
+it('is initialized correctly with storage with non-null key', async () => {
+    fetch.mockResponse(`ロ グ ア ウ ト す る ん じゃ な か った よ,ro gu a u to su ru n ja na ka tta yo,
+ど う か し た の と ち い さ い し ろ い ウ サ ギ が き き ま し た,do u ka shi ta no to chi i sa i shi ro i u sa gi ga ki ki ma shi ta,小:7:9 白:11:13 聞:18:19
+`)
+    let storage = {
+        getItem: (key) => {
+            let m = new Map()
+            m.set('ロ', {correct: 1, wrong: 1})
+            return JSON.stringify([...m])
+        }
+    }
+    let ls = new LearnState()
+    await ls.init(storage)
+    expect(ls.kanaAccuracyDict.get('ロ')).toEqual({correct: 1, wrong: 1})
+})
+
 it('gets sentence with specific kana', async () => {
     fetch.mockResponse(`ロ,ro,
 ど,do,

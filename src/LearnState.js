@@ -61,7 +61,10 @@ class LearnState {
         }
         if (this.storage) {
             const v = this.storage.getItem(KANA_ACCURACY_KEY)
-            this.kanaAccuracyDict = new Map(JSON.parse(v))
+            if (v) {
+                let d = new Map(JSON.parse(v))
+                d.forEach((v, k) => this.kanaAccuracyDict.set(k, v))
+            }
         }
     }
 
