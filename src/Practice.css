@@ -30,8 +30,7 @@
     color: darkgreen;
 }
 .solving {
-    text-decoration: underline;
-    text-underline-position: under;
+    border-bottom: 1px solid black;
 }
 .unsolved {
     color: #374d4d;
