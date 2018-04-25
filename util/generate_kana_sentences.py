@@ -161,14 +161,16 @@ def parse_jpn_indices_line(line):
         for word in sentence.split():
             word_kana, kanji_info = convert_word(word)
             split_word_kana, split_word_romaji = get_romaji(word_kana)
-            split_kana_sentence += split_word_kana
-            split_romaji_sentence += split_word_romaji
+            if split_word_romaji == ('ha',):
+                split_word_romaji = ('wa',)
+            split_kana_sentence.append(' '.join(split_word_kana))
+            split_romaji_sentence.append(' '.join(split_word_romaji))
             if kanji_info:
                 kanji, start, end = kanji_info
                 start, end = adjust_indices(split_word_kana, start, end)
                 kanji_info_list.append('{}:{}:{}'.format(kanji, pos + start, pos + end))
             pos += len(split_word_kana)
-        return (' '.join(split_kana_sentence), ' '.join(split_romaji_sentence),
+        return (';'.join(split_kana_sentence), ';'.join(split_romaji_sentence),
             ' '.join(kanji_info_list), None)
     except RuntimeError:
         import traceback

@@ -100,6 +100,9 @@ class LearnState {
                 return [a[0], parseInt(a[1], 10), parseInt(a[2], 10)]
             })
         }
+        // Don't care for word splits right now
+        kana = kana.replace(new RegExp(';', 'g'), ' ')
+        romaji = romaji.replace(new RegExp(';', 'g'), ' ')
         return [kana.split(' '), romaji.split(' '), kanjiInfo]
     }
 

@@ -104,6 +104,17 @@ it('gets random sentence', async () => {
     }
 })
 
+it('handles multi-word sentence', async () => {
+    fetch.mockResponse(`ロ;ど,ro;do,
+`)
+
+    let ls = new LearnState()
+    await ls.init()
+    const [kanaSentence, romajiSentence] = ls._getRandomSentence()
+    expect(romajiSentence).toEqual(['ro', 'do'])
+    expect(kanaSentence).toEqual(['ロ', 'ど'])
+})
+
 it('pardons mistakes', async () => {
     fetch.mockResponse(`ロ,ro,
 ど,do,
