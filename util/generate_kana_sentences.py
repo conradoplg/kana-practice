@@ -7,6 +7,7 @@ import romkan.common
 
 _WORD_RE = re.compile(r'^(\w+)(\|\d+)?(\(\w+\))?(\[\d+\])?(\{\w+\})?~?')
 _KANA_RE = re.compile(r'^[\u30a0-\u30ff\u3040-\u309f]+$')
+_KANA_SPLIT_RE = re.compile(r'([\u30a0-\u30ff\u3040-\u309f]+)')
 
 
 def get_romaji(s):
@@ -125,7 +126,7 @@ def convert_word(full_word):
                 'get_word_kana({}) returned None'.format(repr(word)))
     if form:
         if is_kana(form):
-            return form, None
+            return form, []
         # Assuming form is kanjis + kana.
         # Find the kana for "kanjis"
         kana_suffix = os.path.commonprefix([word[::-1], word_kana[::-1]])[::-1]
@@ -140,12 +141,30 @@ def convert_word(full_word):
             repr(full_word), repr(word_kana)))
     if form:
         word = form
-    kana_suffix = os.path.commonprefix([word[::-1], word_kana[::-1]])[::-1]
-    kanji_prefix = word[:len(word) - len(kana_suffix)]
-    kanji_prefix_kana = word_kana[:len(word_kana) - len(kana_suffix)]
-    if not kanji_prefix:
-        return word_kana, None
-    return word_kana, (kanji_prefix, 0, len(kanji_prefix_kana))
+
+    parts = [p for p in re.split(_KANA_SPLIT_RE, word) if len(p) > 0]
+    regex = ''
+    for p in parts:
+        if is_kana(p[0]):
+            regex += p
+        else:
+            regex += '(.+)'
+    m = re.fullmatch(regex, word_kana)
+    if not m:
+        raise RuntimeError('convert_word failed to match kanji with kana; word={}; word_kana={}, regex={}'.format(
+            repr(word), repr(word_kana), repr(regex)))
+    kanji_info_list = []
+    pos = 0
+    mi = 1
+    for p in parts:
+        if is_kana(p[0]):
+            pos += len(p)
+        else:
+            size = len(m.group(mi))
+            kanji_info_list.append((p, pos, pos + size))
+            mi += 1
+            pos += size
+    return word_kana, kanji_info_list
 
 
 def parse_jpn_indices_line(line):
@@ -159,13 +178,13 @@ def parse_jpn_indices_line(line):
         kanji_info_list = []
         pos = 0
         for word in sentence.split():
-            word_kana, kanji_info = convert_word(word)
+            word_kana, word_kanji_info_list = convert_word(word)
             split_word_kana, split_word_romaji = get_romaji(word_kana)
             if split_word_romaji == ('ha',):
                 split_word_romaji = ('wa',)
             split_kana_sentence.append(' '.join(split_word_kana))
             split_romaji_sentence.append(' '.join(split_word_romaji))
-            if kanji_info:
+            for kanji_info in word_kanji_info_list:
                 kanji, start, end = kanji_info
                 start, end = adjust_indices(split_word_kana, start, end)
                 kanji_info_list.append('{}:{}:{}'.format(kanji, pos + start, pos + end))

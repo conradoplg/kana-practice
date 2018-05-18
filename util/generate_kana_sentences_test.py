@@ -8,14 +8,14 @@ def test_all():
     assert not is_kana('abc')
     assert not is_kana('ぁabc')
     assert not is_kana('abcぁ')
-    assert convert_word('住む{住んでいる}') == ('すんでいる', ('住', 0, 1))
-    assert convert_word('為る(する){して}') == ('して', None)
+    assert convert_word('住む{住んでいる}') == ('すんでいる', [('住', 0, 1)])
+    assert convert_word('為る(する){して}') == ('して', [])
     #私たち が 其処(そこ){そこ} へ 行く かどうか を 決める の は|1 君(きみ)[01]{君の} 責任 だ
-    assert convert_word('私たち') == ('わたしたち', ('私', 0, 3))
-    assert convert_word('君(きみ)[01]{君の}') == ('きみの', ('君', 0, 2))
+    assert convert_word('私たち') == ('わたしたち', [('私', 0, 3)])
+    assert convert_word('君(きみ)[01]{君の}') == ('きみの', [('君', 0, 2)])
     # Test for edict2 with two readings
-    assert convert_word('馬鹿げる{馬鹿げていた}') == ('ばかげていた', ('馬鹿', 0, 2))
-    assert convert_word('為る(する){しなかったら}') == ('しなかったら', None)
+    assert convert_word('馬鹿げる{馬鹿げていた}') == ('ばかげていた', [('馬鹿', 0, 2)])
+    assert convert_word('為る(する){しなかったら}') == ('しなかったら', [])
     assert get_romaji('ばかげていた') == [
         tuple('ば か げ て い た'.split()),
         tuple('ba ka ge te i ta'.split()),
@@ -39,7 +39,7 @@ def test_all():
     assert parse_jpn_indices_line(line) == (
         'じゃ;りゅ う ね ん;し な か った ら;つ き あ って;く れ ん;の;タ ラ レ バ;は な し;って;す き;じゃ な い;の',
         'ja;ryu u ne n;shi na ka tta ra;tsu ki a tte;ku re n;no;ta ra re ba;ha na shi;tte;su ki;ja na i;no',
-        '留年:1:5 付き合:10:13 話:22:25 好:26:27',
+        '留年:1:5 付:10:11 合:12:13 話:22:25 好:26:27',
         None,
     )
     line = '74036   329684  此の{この} 新聞 は|1 ロハ~ だ'
@@ -49,6 +49,8 @@ def test_all():
         '新聞:2:6',
         None,
     )
+
+    assert convert_word('アポロ計画~') == ('アポロけいかく', [('計画', 3, 7)])
 
     # 74076	329644	じゃ 留年~ 為る(する){しなかったら} 付き合う{付き合って} 呉れる{くれん} の タラレバ~ 話(はなし) って 好き(すき) だ{じゃない} の
     # 74076	jpn	「じゃ留年しなかったら付き合ってくれんの？」「タラレバ話って好きじゃないの」
